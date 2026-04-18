@@ -88,3 +88,53 @@
     grid-template-columns: 1fr;
   }
 }
+
+.ticketsHeader {
+  max-width: 1100px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.clearBtn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 16px;
+  background: #eef1ff;
+  color: #5f6bc1;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ticketsList {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+}
+
+.ticketCard {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(220, 226, 255, 0.8);
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 10px 24px rgba(60, 74, 140, 0.05);
+}
+
+.ticketCard h3 {
+  margin-top: 0;
+}
+
+.emptyTickets {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(220, 226, 255, 0.8);
+  border-radius: 24px;
+  padding: 36px;
+  color: #7b81a8;
+}
