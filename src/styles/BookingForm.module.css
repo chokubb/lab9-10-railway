@@ -1,0 +1,79 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(220, 226, 255, 0.8);
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(60, 74, 140, 0.05);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.row input {
+  border: 1px solid #dce3ff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 15px;
+}
+
+.options {
+  margin-top: 14px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error {
+  color: #c94747;
+  margin: 10px 0 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  border: none;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryBtn {
+  background: linear-gradient(to right, #7d8df7, #9d7cf6);
+  color: white;
+}
+
+.secondaryBtn {
+  background: #edf1ff;
+  color: #5f6bc1;
+}
+
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
