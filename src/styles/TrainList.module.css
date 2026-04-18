@@ -1,0 +1,14 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.emptyState {
+  background: white;
+  border-radius: 22px;
+  padding: 28px;
+  text-align: center;
+  color: #818181;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.04);
+}
