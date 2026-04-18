@@ -1,4 +1,5 @@
 import styles from "../styles/TrainCard.module.css";
+import { Link } from "react-router-dom";
 
 function TrainCard({ train }) {
   return (
@@ -32,7 +33,9 @@ function TrainCard({ train }) {
 
       <div className={styles.sideInfo}>
         <p className={styles.price}>{train.price}₴</p>
-        <button className={styles.button}>Select Seats ✦</button>
+        <Link to={`/booking/${train.id}`} className={styles.button}>
+          Select Seats ✦
+        </Link>
       </div>
     </article>
   );

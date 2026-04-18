@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { trains } from "../data/trains";
 import TrainList from "../components/TrainList";
 import styles from "../styles/Home.module.css";
+import { Link } from "react-router-dom";
 
 function Home() {
   const [numberQuery, setNumberQuery] = useState("");
@@ -49,9 +50,9 @@ function Home() {
               {darkMode ? "Light Mode ☼" : "Dark Mode ✦"}
             </button>
 
-            <button className={styles.ticketsButton} type="button">
+            <Link to="/tickets" className={styles.ticketsButton}>
               My Tickets ✦
-            </button>
+            </Link>
           </div>
         </div>
 
