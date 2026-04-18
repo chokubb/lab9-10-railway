@@ -1,9 +1,14 @@
 import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import { trains } from "../data/trains";
-import { getBookedSeatNumbers } from "../services/BookingService";
+import {
+  getBookedSeatNumbers,
+  saveBookingBatch,
+} from "../services/BookingService";
 import WagonSelector from "../components/WagonSelector";
 import SeatMap from "../components/SeatMap";
+import BookingForm from "../components/BookingForm";
 import styles from "../styles/Booking.module.css";
 
 const wagons = [
@@ -14,10 +19,31 @@ const wagons = [
 
 function Booking() {
   const { trainId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const train = trains.find((item) => item.id === trainId);
 
-  const [selectedWagonId, setSelectedWagonId] = useState("01");
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  const initialSelectedSeats = location.state?.selectedSeats || [];
+  const initialWagonId = location.state?.selectedWagonId || "01";
+
+  const [selectedWagonId, setSelectedWagonId] = useState(initialWagonId);
+  const [selectedSeats, setSelectedSeats] = useState(initialSelectedSeats);
+  const [step, setStep] = useState(initialSelectedSeats.length > 0 ? "form" : "seats");
+  const [errors, setErrors] = useState({});
+
+  const [passengerData, setPassengerData] = useState(() => {
+    const data = {};
+    initialSelectedSeats.forEach((seat) => {
+      data[seat] = {
+        firstName: "",
+        lastName: "",
+        bedding: false,
+        tea: false,
+      };
+    });
+    return data;
+  });
 
   const selectedWagon = wagons.find((wagon) => wagon.id === selectedWagonId);
 
@@ -28,16 +54,115 @@ function Booking() {
   function handleToggleSeat(seatNumber) {
     if (bookedSeats.includes(seatNumber)) return;
 
-    setSelectedSeats((prev) =>
-      prev.includes(seatNumber)
-        ? prev.filter((seat) => seat !== seatNumber)
-        : [...prev, seatNumber]
-    );
+    setSelectedSeats((prev) => {
+      const exists = prev.includes(seatNumber);
+
+      if (exists) {
+        const updated = prev.filter((seat) => seat !== seatNumber);
+        setPassengerData((old) => {
+          const copy = { ...old };
+          delete copy[seatNumber];
+          return copy;
+        });
+        return updated;
+      }
+
+      setPassengerData((old) => ({
+        ...old,
+        [seatNumber]: {
+          firstName: "",
+          lastName: "",
+          bedding: false,
+          tea: false,
+        },
+      }));
+
+      return [...prev, seatNumber];
+    });
   }
 
   function handleChangeWagon(wagonId) {
     setSelectedWagonId(wagonId);
     setSelectedSeats([]);
+    setPassengerData({});
+    setErrors({});
+    setStep("seats");
+  }
+
+  function handleChangePassenger(seat, field, value) {
+    setPassengerData((prev) => ({
+      ...prev,
+      [seat]: {
+        ...prev[seat],
+        [field]: value,
+      },
+    }));
+  }
+
+  const totalPrice = useMemo(() => {
+    return selectedSeats.reduce((sum, seat) => {
+      const passenger = passengerData[seat];
+      const extras =
+        (passenger?.bedding ? 95 : 0) +
+        (passenger?.tea ? 20 : 0);
+
+      return sum + train.price + extras;
+    }, 0);
+  }, [selectedSeats, passengerData, train]);
+
+  function handleProceedToForm() {
+    if (selectedSeats.length === 0) {
+      toast.error("Спочатку оберіть хоча б одне місце.");
+      return;
+    }
+    setStep("form");
+  }
+
+  function handleSubmitBooking() {
+    const newErrors = {};
+
+    selectedSeats.forEach((seat) => {
+      const passenger = passengerData[seat];
+      if (!passenger?.firstName.trim() || !passenger?.lastName.trim()) {
+        newErrors[seat] = true;
+      }
+    });
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Заповніть дані всіх пасажирів.");
+      return;
+    }
+
+    const tickets = selectedSeats.map((seat) => {
+      const passenger = passengerData[seat];
+      const extras =
+        (passenger.bedding ? 95 : 0) +
+        (passenger.tea ? 20 : 0);
+
+      return {
+        id: `${trainId}-${selectedWagonId}-${seat}-${Date.now()}`,
+        trainId,
+        trainNumber: train.number,
+        trainName: train.name,
+        from: train.from,
+        to: train.to,
+        date: train.date,
+        departure: train.departure,
+        wagonId: selectedWagonId,
+        seatNumber: seat,
+        passenger,
+        total: train.price + extras,
+      };
+    });
+
+    saveBookingBatch(tickets);
+    toast.success("Бронювання успішно збережено!");
+
+    setTimeout(() => {
+      navigate("/tickets");
+    }, 1200);
   }
 
   if (!train) {
@@ -46,6 +171,8 @@ function Booking() {
 
   return (
     <main className={styles.page}>
+      <ToastContainer position="top-right" />
+
       <div className={styles.topBar}>
         <Link to="/" className={styles.backLink}>← Back to schedule</Link>
       </div>
@@ -54,18 +181,32 @@ function Booking() {
         <section className={styles.mainColumn}>
           <h1 className={styles.title}>Seat Booking ✦</h1>
 
-          <WagonSelector
-            wagons={wagons}
-            selectedWagonId={selectedWagonId}
-            onSelect={handleChangeWagon}
-          />
+          {step === "seats" ? (
+            <>
+              <WagonSelector
+                wagons={wagons}
+                selectedWagonId={selectedWagonId}
+                onSelect={handleChangeWagon}
+              />
 
-          <SeatMap
-            seats={selectedWagon.seats}
-            selectedSeats={selectedSeats}
-            bookedSeats={bookedSeats}
-            onToggleSeat={handleToggleSeat}
-          />
+              <SeatMap
+                seats={selectedWagon.seats}
+                selectedSeats={selectedSeats}
+                bookedSeats={bookedSeats}
+                onToggleSeat={handleToggleSeat}
+              />
+            </>
+          ) : (
+            <BookingForm
+              selectedSeats={selectedSeats}
+              passengerData={passengerData}
+              errors={errors}
+              onChangePassenger={handleChangePassenger}
+              onBack={() => setStep("seats")}
+              onSubmit={handleSubmitBooking}
+              totalPrice={totalPrice}
+            />
+          )}
         </section>
 
         <aside className={styles.sidebar}>
@@ -78,25 +219,34 @@ function Booking() {
               <p>No seats selected yet.</p>
             ) : (
               <>
-                {selectedSeats.map((seat) => (
-                  <div key={seat} className={styles.summaryRow}>
-                    <span>Wagon {selectedWagonId}, Seat {seat}</span>
-                    <span>{train.price}₴</span>
-                  </div>
-                ))}
+                {selectedSeats.map((seat) => {
+                  const passenger = passengerData[seat];
+                  const extras =
+                    (passenger?.bedding ? 95 : 0) +
+                    (passenger?.tea ? 20 : 0);
+
+                  return (
+                    <div key={seat} className={styles.summaryRow}>
+                      <span>Wagon {selectedWagonId}, Seat {seat}</span>
+                      <span>{train.price + extras}₴</span>
+                    </div>
+                  );
+                })}
 
                 <div className={styles.totalRow}>
                   <strong>Total</strong>
-                  <strong>{selectedSeats.length * train.price}₴</strong>
+                  <strong>{totalPrice}₴</strong>
                 </div>
 
-                <Link
-                  to={`/booking/${trainId}?step=form&wagon=${selectedWagonId}`}
-                  state={{ selectedSeats, selectedWagonId }}
-                  className={styles.proceedBtn}
-                >
-                  Proceed to passenger data
-                </Link>
+                {step === "seats" && (
+                  <button
+                    type="button"
+                    className={styles.proceedBtn}
+                    onClick={handleProceedToForm}
+                  >
+                    Proceed to passenger data
+                  </button>
+                )}
               </>
             )}
           </div>
