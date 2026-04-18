@@ -138,3 +138,12 @@
   padding: 36px;
   color: #7b81a8;
 }
+
+.basePriceRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #6a7094;
+  font-size: 14px;
+  padding-top: 4px;
+}

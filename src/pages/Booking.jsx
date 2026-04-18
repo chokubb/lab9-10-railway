@@ -12,9 +12,24 @@ import BookingForm from "../components/BookingForm";
 import styles from "../styles/Booking.module.css";
 
 const wagons = [
-  { id: "01", type: "Купе", seats: Array.from({ length: 36 }, (_, i) => i + 1) },
-  { id: "02", type: "Плацкарт", seats: Array.from({ length: 54 }, (_, i) => i + 1) },
-  { id: "03", type: "Люкс", seats: Array.from({ length: 16 }, (_, i) => i + 1) },
+  {
+    id: "01",
+    type: "Купе",
+    basePrice: 450,
+    seats: Array.from({ length: 36 }, (_, i) => i + 1),
+  },
+  {
+    id: "02",
+    type: "Плацкарт",
+    basePrice: 200,
+    seats: Array.from({ length: 54 }, (_, i) => i + 1),
+  },
+  {
+    id: "03",
+    type: "Люкс",
+    basePrice: 900,
+    seats: Array.from({ length: 16 }, (_, i) => i + 1),
+  },
 ];
 
 function Booking() {
@@ -106,7 +121,7 @@ function Booking() {
         (passenger?.bedding ? 95 : 0) +
         (passenger?.tea ? 20 : 0);
 
-      return sum + train.price + extras;
+      return sum + selectedWagon.basePrice + extras;
     }, 0);
   }, [selectedSeats, passengerData, train]);
 
@@ -153,7 +168,7 @@ function Booking() {
         wagonId: selectedWagonId,
         seatNumber: seat,
         passenger,
-        total: train.price + extras,
+        total: selectedWagon.basePrice + extras,
       };
     });
 
@@ -229,10 +244,17 @@ function Booking() {
                   return (
                     <div key={seat} className={styles.summaryRow}>
                       <span>Wagon {selectedWagonId}, Seat {seat}</span>
-                      <span>{train.price + extras}₴</span>
+                      
+                      <span>{selectedWagon.basePrice + extras}₴</span>
+                      
                     </div>
                   );
                 })}
+
+                <div className={styles.basePriceRow}>
+                  <span>Base price</span>
+                  <span>{selectedWagon.basePrice}₴</span>
+                </div>
 
                 <div className={styles.totalRow}>
                   <strong>Total</strong>
