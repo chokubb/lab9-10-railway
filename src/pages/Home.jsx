@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { trains } from "../data/trains";
 import TrainList from "../components/TrainList";
 import styles from "../styles/Home.module.css";
@@ -6,6 +6,15 @@ import styles from "../styles/Home.module.css";
 function Home() {
   const [numberQuery, setNumberQuery] = useState("");
   const [cityQuery, setCityQuery] = useState("");
+
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("artemisTheme");
+    return savedTheme === "dark";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("artemisTheme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   const filteredTrains = useMemo(() => {
     return trains.filter((train) => {
@@ -22,10 +31,30 @@ function Home() {
   }, [numberQuery, cityQuery]);
 
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${darkMode ? styles.darkPage : ""}`}>
+      
+      <div className={styles.spaceDots}></div>
+      <div className={styles.spaceDotsTwo}></div>
+      
       <header className={styles.hero}>
-        <span className={styles.badge}>Artemis Central Hub</span>
-        <button className={styles.ticketsButton}>My Tickets</button>
+        <div className={styles.topActions}>
+          <span className={styles.badge}>Artemis II Transit Hub</span>
+
+          <div className={styles.heroButtons}>
+            <button
+              className={styles.themeButton}
+              onClick={() => setDarkMode((prev) => !prev)}
+              type="button"
+            >
+              {darkMode ? "Light Mode ☼" : "Dark Mode ✦"}
+            </button>
+
+            <button className={styles.ticketsButton} type="button">
+              My Tickets ✦
+            </button>
+          </div>
+        </div>
+
         <h1>
           Find Your <span>"Written in the stars"</span> Destination.
         </h1>
@@ -54,7 +83,7 @@ function Home() {
         <span>☄️</span>
         <span>☆</span>
       </div>
-      
+
       <section className={styles.routesSection}>
         <div className={styles.sectionHeader}>
           <h2>Available Routes ✦</h2>
