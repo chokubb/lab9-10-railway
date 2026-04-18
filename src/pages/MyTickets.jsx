@@ -37,7 +37,6 @@ function MyTickets() {
               <h3>{ticket.from} → {ticket.to}</h3>
               <p>{ticket.date} | Train {ticket.trainNumber}</p>
               <p>Wagon {ticket.wagonId}, Seat {ticket.seatNumber}</p>
-              <p>Base price: {selectedWagon.basePrice}₴</p>
               <p>
                 {ticket.passenger.firstName} {ticket.passenger.lastName}
               </p>
