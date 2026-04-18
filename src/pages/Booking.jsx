@@ -12,9 +12,9 @@ import BookingForm from "../components/BookingForm";
 import styles from "../styles/Booking.module.css";
 
 const wagons = [
-  { id: "01", type: "Купе", seats: Array.from({ length: 16 }, (_, i) => i + 1) },
-  { id: "02", type: "Плацкарт", seats: Array.from({ length: 24 }, (_, i) => i + 1) },
-  { id: "03", type: "Люкс", seats: Array.from({ length: 8 }, (_, i) => i + 1) },
+  { id: "01", type: "Купе", seats: Array.from({ length: 36 }, (_, i) => i + 1) },
+  { id: "02", type: "Плацкарт", seats: Array.from({ length: 54 }, (_, i) => i + 1) },
+  { id: "03", type: "Люкс", seats: Array.from({ length: 16 }, (_, i) => i + 1) },
 ];
 
 function Booking() {
@@ -194,6 +194,7 @@ function Booking() {
                 selectedSeats={selectedSeats}
                 bookedSeats={bookedSeats}
                 onToggleSeat={handleToggleSeat}
+                wagonType={selectedWagon.type}
               />
             </>
           ) : (
