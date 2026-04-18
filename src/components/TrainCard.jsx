@@ -25,14 +25,14 @@ function TrainCard({ train }) {
 
           <div>
             <p className={styles.city}>{train.to}</p>
-            <span className={styles.arrival}>Arrives same day</span>
+            <span className={styles.arrival}>Arrives same orbit</span>
           </div>
         </div>
       </div>
 
       <div className={styles.sideInfo}>
         <p className={styles.price}>{train.price}₴</p>
-        <button className={styles.button}>Select Seats</button>
+        <button className={styles.button}>Select Seats ✦</button>
       </div>
     </article>
   );

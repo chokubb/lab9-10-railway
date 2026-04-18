@@ -5,10 +5,12 @@
 }
 
 .emptyState {
-  background: white;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(218, 224, 255, 0.8);
   border-radius: 22px;
   padding: 28px;
   text-align: center;
-  color: #818181;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.04);
+  color: #7f84a2;
+  box-shadow: 0 8px 22px rgba(72, 85, 150, 0.05);
+  backdrop-filter: blur(6px);
 }

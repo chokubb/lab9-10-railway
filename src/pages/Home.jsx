@@ -27,40 +27,52 @@ function Home() {
         <span className={styles.badge}>Artemis Central Hub</span>
         <button className={styles.ticketsButton}>My Tickets</button>
         <h1>
-          Find Your <span>"Written in the stars"</span> Train.
+          Find Your <span>"Written in the stars"</span> Destination.
         </h1>
         <p>
           Railway system, reliable as Artemis II, comfortable as your bed under the moonlight.
-        </p>
+          A night-sky inspired railway system for calm journeys, soft lights, and long-distance routes.</p>
       </header>
 
       <section className={styles.filters}>
         <input
           type="text"
-          placeholder="Search by train number (e.g. 001-К)"
+          placeholder="Search by train number"
           value={numberQuery}
           onChange={(e) => setNumberQuery(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Search by arrival city (e.g. Lviv)"
+          placeholder="Search by arrival city"
           value={cityQuery}
           onChange={(e) => setCityQuery(e.target.value)}
         />
       </section>
 
+      <div className={styles.backgroundOrnaments}>
+        <span>✦</span>
+        <span>☄️</span>
+        <span>☆</span>
+      </div>
+      
       <section className={styles.routesSection}>
         <div className={styles.sectionHeader}>
-          <h2>Available Routes</h2>
-          <span>View all schedules</span>
+          <h2>Available Routes ✦</h2>
+          <span>View all departures</span>
         </div>
 
         <TrainList trains={filteredTrains} />
       </section>
 
+      <div className={styles.backgroundOrnaments}>
+        <span>✦</span>
+        <span>☄️</span>
+        <span>☆</span>
+      </div>
+
       <footer className={styles.footer}>
-        <p>STARRAIL</p>
-        <span>© 2026 RAILWAY SYSTEM — ARTEMIS EDITION</span>
+        <p>ARTEMIS RAIL</p>
+        <span>© 2026 INTERCITY SYSTEM — MOONLINE EDITION</span>
       </footer>
     </main>
   );
